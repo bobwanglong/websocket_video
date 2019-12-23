@@ -1,0 +1,107 @@
+{% extends "video/video_base.html" %}
+
+{% block content %}
+    <textarea class="form-control" id="chat-log" disabled rows="20"></textarea><br/>
+    <input class="form-control" id="chat-message-input" type="text"/><br/>
+    <input class="form-control" id="video-file-upload" type="file"/>q
+    {#    <button id="d1">点击发送</button>#}
+
+    <input class="btn btn-success btn-block" id="chat-message-submit" type="button" value="Send"/>
+{% endblock %}
+
+{% block js %}
+
+
+
+    <script>
+    // ajax发送数据
+        function ajFun() {
+            let formdata = new FormData();
+            // FormData对象不仅仅可以传文件还可以传普通的键值对
+            formdata.append('name', 'test');
+            // 获取input框存放的文件
+            //$('#i1')[0].files[0]
+            let file = $('#video-file-upload')[0].files[0];
+            {#formdata.append('myfile',$('#i1')[0].files[0]);#}
+            formdata.append('myfile', file);
+            console.log(formdata);
+            $.ajax({
+                url: '',
+                type: 'post',
+                data: formdata,
+                // ajax发送文件需要修改两个固定的参数
+                processData: false,  // 告诉浏览器不要处理我的数据
+                contentType: false,  // 不要用任何的编码，就用我formdata自带的编码格式，django能够自动识别改formdata对象
+                // 回调函数
+                success: function (data) {
+                    alert(data)
+                }
+            })
+        }
+
+        let videoSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chat');
+        {#'ws://' + Window.location.host + '/ws/video');#}
+
+        videoSocket.onmessage = function (e) {
+            let data = JSON.parse(e.data);
+            let message = data['message'];
+            console.log('这是收到的信息', message);
+            let datamsg = $('#chat-log').val() + message + '\n';
+            $('#chat-log').val(datamsg)
+        };
+
+        videoSocket.onclose = function (e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        $('#chat-message-submit').click(function () {
+            if (videoSocket.readyState === 1) {
+                //let message = $('#chat-message-input').val();
+                {#let message1 = $('#video-file-upload').val();#}
+               // let message1 = $('#video-file-upload')[0].files;
+               // console.log('这是提交的信息', message);
+                //console.log('这是文件', message1);
+
+                {#alert($('#chat-message-input'));#}
+               // videoSocket.send(JSON.stringify({
+                 //   'message': message,
+                    {#'message1': message1,#}
+                //}));
+//test
+
+                $('#chat-message-input').val("");
+                // 发送文件
+
+                let file1 = $('#video-file-upload')[0].files[0];
+                console.log(file1.name);
+
+                // file1 不是直接的二进制文件
+                //将文件转换成二进制文件发送
+               // let reader = new FileReader();
+                //reader.readAsArrayBuffer(file1);
+
+                //console.log('二进制流：',reader.result);
+                //let file_name = file1.name;
+                //videoSocket.send(JSON.stringify({
+                 //   "message": file_name,
+                 //   "bytes" :file1
+                //}));
+                videoSocket.send(file1.name);
+                videoSocket.send(file1);
+                console.log(typeof file1);
+
+
+                {#sendVideo()#}
+            {#ajFun()#}
+
+            } else {
+                console.log("还没有连接")
+
+            }
+
+
+        });
+
+    </script>
+{% endblock %}

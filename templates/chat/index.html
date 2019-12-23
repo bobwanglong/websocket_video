@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <textarea class="form-control" id="chat-log" disabled rows="20"></textarea><br/>
+    <input class="form-control" id="chat-message-input" type="text"/><br/>
+    <input class="btn btn-success btn-block" id="chat-message-submit" type="button" value="Send"/>
+{% endblock %}
+
+{% block js %}
+    <script>
+        let chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chats');
+            console.log(window.location.host);
+        chatSocket.onmessage = function (e) {
+            let data = JSON.parse(e.data);
+            let message = data['message'];
+            console.log('这是收到的信息',message);
+            let datamsg = $('#chat-log').val() + message + '\n';
+            $('#chat-log').val(datamsg)
+        };
+
+        chatSocket.onclose = function (e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+        $('#chat-message-submit').click(function () {
+            if (chatSocket.readyState === 1) {
+                let message = $('#chat-message-input').val();
+                console.log('这是提交的信息',message)
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                $('#chat-message-input').val("")
+            } else {
+                console.log("还没有连接")
+            }
+
+
+        });
+
+    </script>
+{% endblock %}

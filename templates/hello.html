@@ -1,0 +1,90 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>hello</title>#}
+{#    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>#}
+{##}
+{#    <link href="../static/bootstrap-3.3.7/css/bootstrap.min.css" rel="stylesheet">#}
+{#    <script src="../static/bootstrap-3.3.7/js/bootstrap.min.js"></script>#}
+{##}
+{#</head>#}
+{#<body>#}
+{#<h1>hello</h1>#}
+{# <input class="form-control" id="video-file-upload" type="file" />#}
+{#<button id="d1">点击发送</button>#}
+{#<script>#}
+{#    $('#d1').click(#}
+{#    function () {#}
+{#            let formData = new FormData();#}
+{#            // FormData对象不仅仅可以传文件还可以传普通的键值对#}
+{#            let file = $('#video-file-upload')[0].files[0];#}
+{#            console.log('file_name:', file);#}
+{#            formData.append('file_name','test');#}
+{#            // 获取input框存放的文件#}
+{#            //$('#i1')[0].files[0]#}
+{##}
+{#            formData.append('myfile', file);#}
+{#            console.log(formData);#}
+{#            $.ajax({#}
+{#                url: '127.0.0.1:8000/hello/',#}
+{#                type: 'post',#}
+{#                data: formData,#}
+{#                // ajax发送文件需要修改两个固定的参数#}
+{#                processData: false,  // 告诉浏览器不要处理我的数据#}
+{#                contentType: false,  // 不要用任何的编码，就用我formdata自带的编码格式，django能够自动识别改formdata对象#}
+{#                // 回调函数#}
+{#                success: function (data) {#}
+{#                    alert(data)#}
+{#                }#}
+{#            })#}
+{#        })#}
+{#</script>#}
+{##}
+{#</body>#}
+{#</html>#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+{#    <link rel="stylesheet" href="/static/bootstrap-3.3.7/css/bootstrap.min.css">#}
+{#    <script src="/static/bootstrap-3.3.7/js/bootstrap.min.js"></script>#}
+</head>
+<body>
+{#<input type="file" name="myfile" id="i1"><br/>#}
+<input class="form-control" id="video-file-upload" type="file" /><br/>
+<button id="d1">点击发送~</button>
+{#<button id="d1">选我选我~</button>#}
+
+<script>
+    $('#d1').click(function () {
+       let formdata = new FormData();
+       // FormData对象不仅仅可以传文件还可以传普通的键值对
+        formdata.append('name','test');
+        // 获取input框存放的文件
+        //$('#i1')[0].files[0]
+       let  file = $('#video-file-upload')[0].files[0];
+        {#formdata.append('myfile',$('#i1')[0].files[0]);#}
+        formdata.append('myfile',file);
+        console.log(formdata);
+        $.ajax({
+            url:'',
+            type:'post',
+            data:formdata,
+            // ajax发送文件需要修改两个固定的参数
+            processData:false,  // 告诉浏览器不要处理我的数据
+            contentType:false,  // 不要用任何的编码，就用我formdata自带的编码格式，django能够自动识别改formdata对象
+            // 回调函数
+            success:function (data) {
+                alert(data)
+            }
+        })
+    });
+
+
+
+</script>
+</body>
+</html>
